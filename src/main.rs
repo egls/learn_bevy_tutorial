@@ -1,10 +1,12 @@
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
+use rand::prelude::*;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_startup_system(spawn_player)
+        .add_startup_system(spawn_enemies)
         .add_startup_system(spawn_camera)
         .add_system(player_movement)
         .add_system(confine_player_movement)
@@ -13,9 +15,13 @@ fn main() {
 
 pub const PLAYER_SPEED: f32 = 25.0;
 pub const PLAYER_SIZE: f32 = 64.0;
+pub const NUMBER_ENEMIES: usize = 4;
 
 #[derive(Component)]
 pub struct Player {}
+
+#[derive(Component)]
+pub struct Enemy {}
 
 pub fn spawn_player(
     mut commands: Commands,
@@ -32,6 +38,28 @@ pub fn spawn_player(
         },
         Player {},
     ));
+}
+
+pub fn spawn_enemies(
+    mut commands: Commands,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    asset_server: Res<AssetServer>,
+) {
+    let window = window_query.get_single().unwrap();
+
+    for _ in 0..NUMBER_ENEMIES {
+        let random_x = random::<f32>() * window.width();
+        let random_y = random::<f32>() * window.height();
+
+        commands.spawn((
+            SpriteBundle {
+                transform: Transform::from_xyz(random_x, random_y, 0.0),
+                texture: asset_server.load("sprites/ball_red_large.png"),
+                ..default()
+            },
+            Enemy {},
+        ));
+    }
 }
 
 pub fn spawn_camera(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindow>>) {
@@ -96,19 +124,6 @@ pub fn confine_player_movement(
         let y_max = window.height() - half_player_size;
 
         let mut translation = player_transform.translation;
-
-        // Wrap the player's position around the window borders
-        //if translation.x < -window.width() / 2.0 {
-        //    translation.x = window.width() / 2.0;
-        //} else if translation.x > window.width() / 2.0 {
-        //    translation.x = -window.width() / 2.0;
-        //}
-
-        //if translation.y < -window.height() / 2.0 {
-        //    translation.y = window.height() / 2.0;
-        //} else if translation.y > window.height() / 2.0 {
-        //    translation.y = -window.height() / 2.0;
-        //}
 
         if translation.x < x_min {
             translation.x = x_min;
