@@ -5,7 +5,7 @@ use rand::prelude::*;
 //use crate::enemy::components::*;
 use super::components::*;
 use super::resources::*;
-use super::{NUMBER_ENEMIES, ENEMY_SIZE, ENEMY_SPEED};
+use super::{ENEMY_SIZE, ENEMY_SPEED, NUMBER_ENEMIES};
 
 pub fn spawn_enemies(
     mut commands: Commands,
@@ -30,6 +30,11 @@ pub fn spawn_enemies(
     }
 }
 
+pub fn despawn_enemies(mut command: Commands, enemy_query: Query<Entity, With<Enemy>>) {
+    for enemy_entity in enemy_query.iter() {
+        command.entity(enemy_entity).despawn();
+    }
+}
 
 pub fn enemy_movement(mut enemy_query: Query<(&mut Transform, &Enemy)>, time: Res<Time>) {
     for (mut transform, enemy) in enemy_query.iter_mut() {
@@ -111,8 +116,6 @@ pub fn confine_enemy_movement(
         transform.translation = translation;
     }
 }
-
-
 
 pub fn tick_enemy_spawn_timer(mut enemy_spawn_timer: ResMut<EnemySpawnTimer>, time: Res<Time>) {
     enemy_spawn_timer.timer.tick(time.delta());

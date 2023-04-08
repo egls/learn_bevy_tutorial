@@ -4,14 +4,13 @@ use bevy::window::PrimaryWindow;
 use super::components::*;
 use crate::events::GameOver;
 use crate::game::enemy::components::*;
-use crate::game::score::resources::*;
 use crate::game::enemy::ENEMY_SIZE;
+use crate::game::score::resources::*;
 use crate::game::star::components::Star;
 use crate::game::star::STAR_SIZE;
 
-pub const PLAYER_SPEED: f32 = 15.0;
+pub const PLAYER_SPEED: f32 = 10.0;
 pub const PLAYER_SIZE: f32 = 64.0;
-
 
 pub fn spawn_player(
     mut commands: Commands,
@@ -30,6 +29,11 @@ pub fn spawn_player(
     ));
 }
 
+pub fn despawn_player(mut commands: Commands, player_query: Query<Entity, With<Player>>) {
+    if let Ok(player_entity) = player_query.get_single() {
+        commands.entity(player_entity).despawn();
+    }
+}
 
 pub fn player_movement(
     keyboard_input: Res<Input<KeyCode>>,
@@ -96,7 +100,6 @@ pub fn confine_player_movement(
     }
 }
 
-
 pub fn enemy_hit_player(
     mut commands: Commands,
     mut game_over_event_writer: EventWriter<GameOver>,
@@ -124,8 +127,6 @@ pub fn enemy_hit_player(
         }
     }
 }
-
-
 
 pub fn player_hit_star(
     mut commands: Commands,
