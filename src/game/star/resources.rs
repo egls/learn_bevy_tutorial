@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-pub const STAR_SPAWN_TIME: f32 = 5.0;
+pub const STAR_SPAWN_TIME: f32 = 1.0;
 
 #[derive(Resource)]
 pub struct StarSpawnTimer {
