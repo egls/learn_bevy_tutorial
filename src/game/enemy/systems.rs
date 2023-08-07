@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 use rand::prelude::*;
+use bevy::audio::Volume;
 
 //use crate::enemy::components::*;
 use super::components::*;
@@ -44,9 +45,10 @@ pub fn enemy_movement(mut enemy_query: Query<(&mut Transform, &Enemy)>, time: Re
 }
 
 pub fn update_enemy_direction(
+    mut commands: Commands,
     mut enemy_query: Query<(&Transform, &mut Enemy)>,
     window_query: Query<&Window, With<PrimaryWindow>>,
-    audio: Res<Audio>,
+    //audio: Res<Audio>,
     asset_server: Res<AssetServer>,
 ) {
     let window = window_query.get_single().unwrap();
@@ -81,7 +83,14 @@ pub fn update_enemy_direction(
                 sound_effect_2
             };
 
-            audio.play(sound_effect);
+            // audio.play(sound_effect);
+            commands.spawn((
+                AudioBundle {
+                    source: sound_effect,
+                    settings: PlaybackSettings::LOOP.with_volume(Volume::new_relative(0.5)),
+                },
+                EnemyMusic,
+            ));
         }
     }
 }

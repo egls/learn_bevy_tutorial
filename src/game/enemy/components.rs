@@ -4,3 +4,6 @@ use bevy::prelude::*;
 pub struct Enemy {
     pub direction: Vec2,
 }
+
+#[derive(Component)]
+pub struct EnemyMusic;
