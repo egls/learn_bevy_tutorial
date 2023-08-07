@@ -22,21 +22,15 @@ impl Plugin for EnemyPlugin {
             // Resources
             .init_resource::<EnemySpawnTimer>()
             // Startup Systems
-            //.add_startup_system(spawn_enemies)
-            .add_system(spawn_enemies.in_schedule(OnEnter(AppState::Game)))
+            .add_systems(Update, spawn_enemies.run_if(in_state(AppState::Game)))
             // Systems
-            .add_systems(
-                (
-                    enemy_movement,
-                    update_enemy_direction,
-                    confine_enemy_movement,
-                    tick_enemy_spawn_timer,
-                    spawn_enemies_over_time,
-                )
-                    .in_set(OnUpdate(AppState::Game))
-                    .in_set(OnUpdate(SimulationState::Running)),
-            )
+            .add_systems(Update, enemy_movement.run_if(in_state(AppState::Game)).run_if(in_state(SimulationState::Running)))
+            .add_systems(Update, update_enemy_direction.run_if(in_state(AppState::Game)).run_if(in_state(SimulationState::Running)))
+            .add_systems(Update, confine_enemy_movement.run_if(in_state(AppState::Game)).run_if(in_state(SimulationState::Running)))
+            .add_systems(Update, tick_enemy_spawn_timer.run_if(in_state(AppState::Game)).run_if(in_state(SimulationState::Running)))
+            .add_systems(Update, spawn_enemies_over_time.run_if(in_state(AppState::Game)).run_if(in_state(SimulationState::Running)))
             // Exit State System
-            .add_system(despawn_enemies.in_schedule(OnExit(AppState::Game)));
+            //.add_system(despawn_enemies.in_schedule(OnExit(AppState::Game)));
+            .add_systems(OnExit(AppState::Game), despawn_enemies);
     }
 }

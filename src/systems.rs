@@ -26,9 +26,12 @@ pub fn transition_to_game_state(
     mut next_app_state: ResMut<NextState<AppState>>,
 ) {
     if keyboard_input.just_pressed(KeyCode::G) {
-        if app_state.0 != AppState::Game {
-            next_app_state.set(AppState::Game);
-            println!("Entered AppState::Game");
+        match app_state.get().to_owned() != AppState::Game {
+            true => {
+                next_app_state.set(AppState::Game);
+                println!("Entered AppState::Game");
+            }
+            false => (),
         }
     }
 }
@@ -39,9 +42,12 @@ pub fn transition_to_main_menu_state(
     mut next_app_state: ResMut<NextState<AppState>>,
 ) {
     if keyboard_input.just_pressed(KeyCode::M) {
-        if app_state.0 != AppState::MainMenu {
-            next_app_state.set(AppState::MainMenu);
-            println!("Entered AppState::MainMenu");
+        match app_state.get().to_owned() != AppState::MainMenu {
+            true => {
+                next_app_state.set(AppState::MainMenu);
+                println!("Entered AppState::MainMenu");
+            }
+            false => (),
         }
     }
 }
