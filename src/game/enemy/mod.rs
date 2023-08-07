@@ -22,7 +22,7 @@ impl Plugin for EnemyPlugin {
             // Resources
             .init_resource::<EnemySpawnTimer>()
             // Startup Systems
-            .add_systems(Update, spawn_enemies.run_if(in_state(AppState::Game)))
+            .add_systems(Startup, spawn_enemies.run_if(in_state(AppState::Game)))
             // Systems
             .add_systems(Update, enemy_movement.run_if(in_state(AppState::Game)).run_if(in_state(SimulationState::Running)))
             .add_systems(Update, update_enemy_direction.run_if(in_state(AppState::Game)).run_if(in_state(SimulationState::Running)))
